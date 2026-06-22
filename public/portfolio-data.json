@@ -2,7 +2,7 @@
   "hero": {
     "greeting": "Hello,",
     "name": "I'm Akishwar L",
-    "title": "B.Tech AI&DS Student",
+    "title": "arts",
     "description": "Passionate developer and part time full stack developer. I build robust and scalable web applications.",
     "profileImage": "/hero-profile.jpg",
     "resume": ""
@@ -34,14 +34,54 @@
     }
   ],
   "skills": [
-    { "id": 1, "name": "React", "percentage": 95, "icon": "⚛️" },
-    { "id": 2, "name": "TypeScript", "percentage": 90, "icon": "📘" },
-    { "id": 3, "name": "Node.js", "percentage": 88, "icon": "🟢" },
-    { "id": 4, "name": "Python", "percentage": 85, "icon": "🐍" },
-    { "id": 5, "name": "AWS", "percentage": 82, "icon": "☁️" },
-    { "id": 6, "name": "GraphQL", "percentage": 80, "icon": "◈" },
-    { "id": 7, "name": "Docker", "percentage": 78, "icon": "🐳" },
-    { "id": 8, "name": "PostgreSQL", "percentage": 85, "icon": "🐘" }
+    {
+      "id": 1,
+      "name": "React",
+      "percentage": 95,
+      "icon": "⚛️"
+    },
+    {
+      "id": 2,
+      "name": "TypeScript",
+      "percentage": 90,
+      "icon": "📘"
+    },
+    {
+      "id": 3,
+      "name": "Node.js",
+      "percentage": 88,
+      "icon": "🟢"
+    },
+    {
+      "id": 4,
+      "name": "Python",
+      "percentage": 85,
+      "icon": "🐍"
+    },
+    {
+      "id": 5,
+      "name": "AWS",
+      "percentage": 82,
+      "icon": "☁️"
+    },
+    {
+      "id": 6,
+      "name": "GraphQL",
+      "percentage": 80,
+      "icon": "◈"
+    },
+    {
+      "id": 7,
+      "name": "Docker",
+      "percentage": 78,
+      "icon": "🐳"
+    },
+    {
+      "id": 8,
+      "name": "PostgreSQL",
+      "percentage": 85,
+      "icon": "🐘"
+    }
   ],
   "testimonials": [],
   "blogPosts": [],

@@ -30,7 +30,7 @@
       "title": "Breast Cancer Risk App",
       "description": "A machine learning-powered web application assisting doctors with patient risk assessment based on geographical and demographic data.",
       "image": "/project-2.jpg",
-      "link": "https://github.com/akishwar/breast-cancer-risk"
+      "link": "https://breast-cancer-awareness-tool.vercel.app/"
     }
   ],
   "skills": [

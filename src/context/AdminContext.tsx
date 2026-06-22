@@ -138,6 +138,7 @@ const AdminContext = createContext<AdminContextType | undefined>(undefined);
 
 export function AdminProvider({ children }: { children: React.ReactNode }) {
   const [data, setData] = useState<PortfolioData>(defaultData);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     let isMounted = true;
@@ -149,11 +150,13 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
         const jsonData = await response.json();
         if (isMounted) {
           setData(jsonData);
+          setIsLoading(false);
         }
       } catch (error) {
         console.error('Error fetching local portfolio data, falling back to default:', error);
         if (isMounted) {
           setData(defaultData);
+          setIsLoading(false);
         }
       }
     };
@@ -250,6 +253,14 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
   const resetData = useCallback(async () => {
     await persistData(defaultData);
   }, [persistData]);
+
+  if (isLoading) {
+    return (
+      <div className="fixed inset-0 bg-[#000000] flex items-center justify-center z-[9999]">
+        <div className="w-10 h-10 border-4 border-[#ff6b35] border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <AdminContext.Provider value={{

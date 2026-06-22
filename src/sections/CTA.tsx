@@ -56,7 +56,7 @@ export default function CTA({ onContactClick }: CTAProps) {
   return (
     <section
       ref={sectionRef}
-      className="relative py-24 lg:py-32 overflow-hidden"
+      className="relative py-24 lg:py-32 overflow-hidden glass-mobile-surface"
       style={{ backgroundColor: 'var(--t-bg)' }}
     >
       {/* Background glow */}

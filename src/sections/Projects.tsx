@@ -80,7 +80,7 @@ export default function Projects() {
     <section
       id="projects"
       ref={sectionRef}
-      className="relative py-24 lg:py-32 overflow-hidden"
+      className="relative py-24 lg:py-32 overflow-hidden glass-mobile-surface"
       style={{ backgroundColor: 'var(--t-bg)' }}
     >
       {/* Background particles — stable positions (no Math.random in render) */}
@@ -169,7 +169,7 @@ export default function Projects() {
           {data.projects.map((project) => (
             <div
               key={project.id}
-              className="group relative rounded-2xl overflow-hidden border shrink-0
+              className="group relative rounded-2xl overflow-hidden border shrink-0 glass-mobile-surface
                 hover:border-[#ff6b35]/40 transition-colors duration-300
                 hover:shadow-[0_20px_60px_rgba(255,107,53,0.12)]"
               style={{

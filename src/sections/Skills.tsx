@@ -37,7 +37,7 @@ function SkillBar({ skill, index }: { skill: { name: string; percentage: number;
   return (
     <div
       ref={barRef}
-      className="group p-6 rounded-xl border
+      className="group p-6 rounded-xl border glass-mobile-surface
         hover:border-[#ff6b35]/50
         hover:scale-[1.02] transition-all duration-300"
       style={{ backgroundColor: 'var(--t-bg-card)', borderColor: 'var(--t-border)' }}
@@ -118,7 +118,7 @@ export default function Skills() {
     <section
       id="skills"
       ref={sectionRef}
-      className="relative py-24 lg:py-32 overflow-hidden"
+      className="relative py-24 lg:py-32 overflow-hidden glass-mobile-surface"
       style={{ backgroundColor: 'var(--t-bg-soft)' }}
     >
       {/* Background glow */}
@@ -151,19 +151,19 @@ export default function Skills() {
 
         {/* Additional Info */}
         <div className="mt-16 grid md:grid-cols-3 gap-8">
-          <div className="text-center p-8 rounded-2xl border hover:border-[#ff6b35]/30 transition-colors"
+          <div className="text-center p-8 rounded-2xl border hover:border-[#ff6b35]/30 transition-colors glass-mobile-surface"
             style={{ backgroundColor: 'var(--t-bg-card)', borderColor: 'var(--t-border)' }}>
             <div className="text-4xl mb-4">🚀</div>
             <h3 className="text-xl font-semibold mb-2" style={{ color: 'var(--t-text)' }}>Fast Performance</h3>
             <p className="text-sm" style={{ color: 'var(--t-text-secondary)' }}>Optimized code for lightning-fast load times</p>
           </div>
-          <div className="text-center p-8 rounded-2xl border hover:border-[#ff6b35]/30 transition-colors"
+          <div className="text-center p-8 rounded-2xl border hover:border-[#ff6b35]/30 transition-colors glass-mobile-surface"
             style={{ backgroundColor: 'var(--t-bg-card)', borderColor: 'var(--t-border)' }}>
             <div className="text-4xl mb-4">📱</div>
             <h3 className="text-xl font-semibold mb-2" style={{ color: 'var(--t-text)' }}>Responsive Design</h3>
             <p className="text-sm" style={{ color: 'var(--t-text-secondary)' }}>Flawless experience across all devices</p>
           </div>
-          <div className="text-center p-8 rounded-2xl border hover:border-[#ff6b35]/30 transition-colors"
+          <div className="text-center p-8 rounded-2xl border hover:border-[#ff6b35]/30 transition-colors glass-mobile-surface"
             style={{ backgroundColor: 'var(--t-bg-card)', borderColor: 'var(--t-border)' }}>
             <div className="text-4xl mb-4">🔒</div>
             <h3 className="text-xl font-semibold mb-2" style={{ color: 'var(--t-text)' }}>Secure Code</h3>

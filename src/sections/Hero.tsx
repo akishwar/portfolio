@@ -1,11 +1,12 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
-import { ArrowDown, Download } from 'lucide-react';
+import { ArrowDown, Download, ArrowRight } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
 
 export default function Hero() {
   const { data } = useAdmin();
   const sectionRef = useRef<HTMLElement>(null);
+  const mobileRef = useRef<HTMLElement>(null);
   const greetingRef = useRef<HTMLSpanElement>(null);
   const nameRef = useRef<HTMLHeadingElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
@@ -14,6 +15,18 @@ export default function Hero() {
   const imageRef = useRef<HTMLDivElement>(null);
   const frameRef = useRef<SVGSVGElement>(null);
   const shapesRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      if (mobileRef.current) {
+        gsap.fromTo(mobileRef.current.children,
+          { y: 20, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: 'expo.out', delay: 0.2 }
+        );
+      }
+    }, mobileRef);
+    return () => ctx.revert();
+  }, []);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -113,150 +126,206 @@ export default function Hero() {
   };
 
   return (
-    <section
-      id="home"
-      ref={sectionRef}
-      className="relative min-h-screen overflow-hidden pt-20"
-      style={{ backgroundColor: 'var(--t-bg)' }}
-    >
-      {/* Animated background gradient */}
-      <div className="absolute inset-0 opacity-50">
-        <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-[#ff6b35]/10 rounded-full blur-[150px] animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-[#ff6b35]/5 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '1s' }} />
-      </div>
+    <div id="home">
+      {/* MOBILE HERO (Hidden on lg+ screens) */}
+      <section
+        ref={mobileRef}
+        className="lg:hidden relative min-h-[100dvh] w-full overflow-hidden"
+      >
+        {/* Background Photo */}
+        <img
+          src={data.hero.profileImage}
+          alt={data.hero.name}
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ objectPosition: 'center 20%' }}
+        />
 
-      {/* Grid pattern overlay */}
-      <div 
-        className="absolute inset-0 opacity-[0.03]"
-        style={{
-          backgroundImage: `linear-gradient(rgba(128,128,128,0.1) 1px, transparent 1px),
-                           linear-gradient(90deg, rgba(128,128,128,0.1) 1px, transparent 1px)`,
-          backgroundSize: '50px 50px'
-        }}
-      />
+        {/* Readability Overlays */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/80" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/20 to-transparent" />
 
-      <div className="relative z-10 max-w-[1920px] mx-auto px-6 lg:px-12 min-h-screen flex items-center">
-        <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-0 items-center w-full py-20">
-          {/* Left Column - Content */}
-          <div className="space-y-6 lg:pr-12">
-            <span
-              ref={greetingRef}
-              className="inline-block text-xl lg:text-2xl font-light"
-              style={{ color: 'var(--t-text-secondary)' }}
-            >
-              {data.hero.greeting}
-            </span>
+        {/* Top bar logo removed to prevent duplicating Navigation.tsx logo */}
 
-            <h1
-              ref={nameRef}
-              className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-serif font-bold leading-tight whitespace-nowrap"
-              style={{ color: 'var(--t-text)' }}
-            >
+        {/* Main Content */}
+        <div className="absolute inset-0 z-10 flex flex-col justify-center px-6 pt-20">
+          <div className="max-w-[260px]">
+            <div className="text-white/90 text-xl font-medium mb-2">
               {data.hero.name}
+            </div>
+            <h1 className="text-4xl font-serif font-bold text-white leading-[1.15] mb-4">
+              {data.hero.title.split(/(AI&DS|AI & Data Science)/i).map((part, i) => 
+                part.match(/(AI&DS|AI & Data Science)/i) ? 
+                  <span key={i} className="text-[#ff6b35]">{part}</span> : 
+                  <span key={i}>{part}</span>
+              )}
             </h1>
-
-            <h2
-              ref={titleRef}
-              className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-gradient"
-            >
-              {data.hero.title}
-            </h2>
-
-            <p
-              ref={descRef}
-              className="text-lg max-w-lg leading-relaxed"
-              style={{ color: 'var(--t-text-secondary)' }}
-            >
+            
+            <p className="text-white/80 text-base mb-8 leading-relaxed">
               {data.hero.description}
             </p>
 
-            <div ref={buttonsRef} className="flex flex-wrap gap-4 pt-4">
-              <button
-                onClick={scrollToProjects}
-                className="group px-8 py-3.5 bg-[#ff6b35] text-white rounded-full font-medium
-                  hover:bg-[#ff8c5a] hover:scale-105 hover:shadow-[0_0_40px_rgba(255,107,53,0.5)]
-                  transition-all duration-300 flex items-center gap-2"
-              >
-                View My Work
-                <ArrowDown size={18} className="group-hover:translate-y-1 transition-transform" />
-              </button>
-              <a
-                href={data.hero.resume || "/resume.pdf"}
-                download="Akishwar_Resume"
-                className="group px-8 py-3.5 border rounded-full font-medium
-                  hover:border-[#ff6b35] hover:text-[#ff6b35]
-                  transition-all duration-300 flex items-center gap-2"
-                style={{ borderColor: 'var(--t-border)', color: 'var(--t-text)' }}
-              >
-                Download Resume
-                <Download size={18} className="group-hover:translate-y-0.5 transition-transform" />
-              </a>
-            </div>
-          </div>
-
-          {/* Right Column - Profile Image */}
-          <div className="relative flex justify-center lg:justify-end perspective-1000">
-            <div
-              ref={imageRef}
-              className="relative preserve-3d group"
-              style={{ transformStyle: 'preserve-3d' }}
+            <button 
+              onClick={scrollToProjects}
+              className="inline-flex items-center gap-3 rounded-full border-2 border-[#ff6b35] text-[#ff6b35] bg-transparent px-7 py-3 font-medium hover:bg-[#ff6b35]/10 transition-colors"
             >
-              {/* Animated gradient frame */}
-              <svg
-                ref={frameRef}
-                className="absolute -inset-4 w-[calc(100%+32px)] h-[calc(100%+32px)] animate-spin"
-                style={{ animationDuration: '20s' }}
-                viewBox="0 0 300 380"
+              View My Work
+              <ArrowRight size={18} />
+            </button>
+          </div>
+        </div>
+
+        {/* Scroll Indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-10">
+          <span className="text-[10px] tracking-[0.2em] text-white/60 font-medium whitespace-nowrap">SCROLL TO EXPLORE</span>
+          <ArrowDown size={16} className="text-white/60 animate-bounce" />
+        </div>
+      </section>
+
+      {/* DESKTOP HERO (Hidden on mobile) */}
+      <section
+        ref={sectionRef}
+        className="hidden lg:block relative min-h-screen overflow-hidden pt-20 glass-mobile-surface"
+        style={{ backgroundColor: 'var(--t-bg)' }}
+      >
+        {/* Animated background gradient */}
+        <div className="absolute inset-0 opacity-50">
+          <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-[#ff6b35]/10 rounded-full blur-[150px] animate-pulse" />
+          <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-[#ff6b35]/5 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '1s' }} />
+        </div>
+
+        {/* Grid pattern overlay */}
+        <div 
+          className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage: `linear-gradient(rgba(128,128,128,0.1) 1px, transparent 1px),
+                             linear-gradient(90deg, rgba(128,128,128,0.1) 1px, transparent 1px)`,
+            backgroundSize: '50px 50px'
+          }}
+        />
+
+        <div className="relative z-10 max-w-[1920px] mx-auto px-6 lg:px-12 min-h-screen flex items-center">
+          <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-0 items-center w-full py-20">
+            {/* Left Column - Content */}
+            <div className="space-y-6 lg:pr-12">
+              <span
+                ref={greetingRef}
+                className="inline-block text-xl lg:text-2xl font-light"
+                style={{ color: 'var(--t-text-secondary)' }}
               >
-                <defs>
-                  <linearGradient id="frameGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#ff6b35" />
-                    <stop offset="50%" stopColor="#ff8c5a" />
-                    <stop offset="100%" stopColor="#ff6b35" />
-                  </linearGradient>
-                </defs>
-                <circle
-                  cx="150"
-                  cy="190"
-                  r="140"
-                  fill="none"
-                  stroke="url(#frameGradient)"
-                  strokeWidth="2"
-                  opacity="0.6"
-                />
-              </svg>
+                {data.hero.greeting}
+              </span>
 
-              {/* Glow effect */}
-              <div className="absolute inset-0 bg-[#ff6b35]/20 rounded-full blur-[60px] animate-pulse-glow" />
+              <h1
+                ref={nameRef}
+                className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-serif font-bold leading-tight whitespace-nowrap"
+                style={{ color: 'var(--t-text)' }}
+              >
+                {data.hero.name}
+              </h1>
 
-              {/* Profile image */}
-              <div className="relative w-[280px] h-[350px] sm:w-[320px] sm:h-[400px] lg:w-[360px] lg:h-[450px] rounded-full overflow-hidden
-                border-2 group-hover:border-[#ff6b35]/50 transition-colors duration-500"
-                style={{ borderColor: 'var(--t-border)' }}>
-                <img
-                  src={data.hero.profileImage}
-                  alt={data.hero.name}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                />
-                {/* Overlay gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+              <h2
+                ref={titleRef}
+                className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-gradient"
+              >
+                {data.hero.title}
+              </h2>
+
+              <p
+                ref={descRef}
+                className="text-lg max-w-lg leading-relaxed"
+                style={{ color: 'var(--t-text-secondary)' }}
+              >
+                {data.hero.description}
+              </p>
+
+              <div ref={buttonsRef} className="flex flex-wrap gap-4 pt-4">
+                <button
+                  onClick={scrollToProjects}
+                  className="group px-8 py-3.5 bg-[#ff6b35] text-white rounded-full font-medium
+                    hover:bg-[#ff8c5a] hover:scale-105 hover:shadow-[0_0_40px_rgba(255,107,53,0.5)]
+                    transition-all duration-300 flex items-center gap-2"
+                >
+                  View My Work
+                  <ArrowDown size={18} className="group-hover:translate-y-1 transition-transform" />
+                </button>
+                <a
+                  href={data.hero.resume || "/resume.pdf"}
+                  download="Akishwar_Resume"
+                  className="group px-8 py-3.5 border rounded-full font-medium
+                    hover:border-[#ff6b35] hover:text-[#ff6b35]
+                    transition-all duration-300 flex items-center gap-2"
+                  style={{ borderColor: 'var(--t-border)', color: 'var(--t-text)' }}
+                >
+                  Download Resume
+                  <Download size={18} className="group-hover:translate-y-0.5 transition-transform" />
+                </a>
               </div>
+            </div>
 
-              {/* Floating shapes */}
-              <div ref={shapesRef} className="absolute inset-0 pointer-events-none">
-                <div className="shape absolute -top-8 -left-8 w-16 h-16 border-2 border-[#ff6b35]/40 rotate-45 animate-float" />
-                <div className="shape absolute -bottom-4 -right-4 w-12 h-12 bg-[#ff6b35]/20 rounded-full animate-float-delayed" />
-                <div className="shape absolute top-1/4 -right-12 w-8 h-8 border border-[#ff6b35]/30 rotate-12 animate-float" style={{ animationDelay: '-1s' }} />
-                <div className="shape absolute bottom-1/4 -left-12 w-10 h-10 bg-gradient-to-br from-[#ff6b35]/30 to-transparent rounded-lg rotate-45 animate-float-delayed" />
+            {/* Right Column - Profile Image */}
+            <div className="relative flex justify-center lg:justify-end perspective-1000">
+              <div
+                ref={imageRef}
+                className="relative preserve-3d group"
+                style={{ transformStyle: 'preserve-3d' }}
+              >
+                {/* Animated gradient frame */}
+                <svg
+                  ref={frameRef}
+                  className="absolute -inset-4 w-[calc(100%+32px)] h-[calc(100%+32px)] animate-spin"
+                  style={{ animationDuration: '20s' }}
+                  viewBox="0 0 300 380"
+                >
+                  <defs>
+                    <linearGradient id="frameGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#ff6b35" />
+                      <stop offset="50%" stopColor="#ff8c5a" />
+                      <stop offset="100%" stopColor="#ff6b35" />
+                    </linearGradient>
+                  </defs>
+                  <circle
+                    cx="150"
+                    cy="190"
+                    r="140"
+                    fill="none"
+                    stroke="url(#frameGradient)"
+                    strokeWidth="2"
+                    opacity="0.6"
+                  />
+                </svg>
+
+                {/* Glow effect */}
+                <div className="absolute inset-0 bg-[#ff6b35]/20 rounded-full blur-[60px] animate-pulse-glow" />
+
+                {/* Profile image */}
+                <div className="relative w-[280px] h-[350px] sm:w-[320px] sm:h-[400px] lg:w-[360px] lg:h-[450px] rounded-full overflow-hidden
+                  border-2 group-hover:border-[#ff6b35]/50 transition-colors duration-500"
+                  style={{ borderColor: 'var(--t-border)' }}>
+                  <img
+                    src={data.hero.profileImage}
+                    alt={data.hero.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  />
+                  {/* Overlay gradient */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                </div>
+
+                {/* Floating shapes */}
+                <div ref={shapesRef} className="absolute inset-0 pointer-events-none">
+                  <div className="shape absolute -top-8 -left-8 w-16 h-16 border-2 border-[#ff6b35]/40 rotate-45 animate-float" />
+                  <div className="shape absolute -bottom-4 -right-4 w-12 h-12 bg-[#ff6b35]/20 rounded-full animate-float-delayed" />
+                  <div className="shape absolute top-1/4 -right-12 w-8 h-8 border border-[#ff6b35]/30 rotate-12 animate-float" style={{ animationDelay: '-1s' }} />
+                  <div className="shape absolute bottom-1/4 -left-12 w-10 h-10 bg-gradient-to-br from-[#ff6b35]/30 to-transparent rounded-lg rotate-45 animate-float-delayed" />
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Bottom gradient fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-32"
-        style={{ background: `linear-gradient(to top, var(--t-bg), transparent)` }} />
-    </section>
+        {/* Bottom gradient fade */}
+        <div className="absolute bottom-0 left-0 right-0 h-32"
+          style={{ background: `linear-gradient(to top, var(--t-bg), transparent)` }} />
+      </section>
+    </div>
   );
 }

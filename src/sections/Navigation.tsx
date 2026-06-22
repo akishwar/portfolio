@@ -160,7 +160,7 @@ export default function Navigation({ scrolled, onContactClick, onLogoClick }: Na
       >
         <div className="absolute inset-0 backdrop-blur-xl" style={{ backgroundColor: 'var(--t-overlay)' }} onClick={() => setMobileMenuOpen(false)} />
         <div
-          className={`absolute right-0 top-0 h-full w-[280px] border-l p-8 pt-24
+          className={`absolute right-0 top-0 h-full w-[280px] border-l p-8 pt-24 glass-mobile-surface
             transition-transform duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] ${
             mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
           }`}

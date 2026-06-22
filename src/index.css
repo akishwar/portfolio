@@ -231,3 +231,47 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Mobile Liquid Glass Theme Overrides */
+@media (max-width: 1023.98px) {
+  :root {
+    --t-bg: rgba(10, 10, 10, 0.55);
+    --t-bg-soft: rgba(15, 15, 15, 0.5);
+    --t-bg-card: rgba(20, 20, 20, 0.45);
+    --t-border: rgba(255, 255, 255, 0.12);
+    --t-glass: rgba(20, 14, 10, 0.4);
+  }
+  .light {
+    --t-bg: rgba(255, 255, 255, 0.55);
+    --t-bg-soft: rgba(245, 245, 245, 0.5);
+    --t-bg-card: rgba(255, 255, 255, 0.45);
+    --t-border: rgba(0, 0, 0, 0.10);
+    --t-glass: rgba(255, 235, 225, 0.4);
+  }
+
+  .glass-mobile-surface {
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border: 1px solid var(--t-border);
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.25),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      inset 0 0 40px rgba(255, 107, 53, 0.06);
+    position: relative;
+    overflow: hidden;
+  }
+  .glass-mobile-surface::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255, 107, 53, 0.08) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .glass-mobile-surface::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  }
+}

@@ -73,7 +73,7 @@ export default function Footer({ onContactClick }: FooterProps) {
     <footer
       id="contact"
       ref={footerRef}
-      className="relative py-16 lg:py-24 border-t overflow-hidden"
+      className="relative py-16 lg:py-24 border-t overflow-hidden glass-mobile-surface"
       style={{ backgroundColor: 'var(--t-bg-soft)', borderColor: 'var(--t-border)' }}
     >
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">

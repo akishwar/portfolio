@@ -154,7 +154,7 @@ export default function About() {
     <section
       id="about"
       ref={sectionRef}
-      className="relative py-24 lg:py-32 overflow-hidden"
+      className="relative py-24 lg:py-32 overflow-hidden glass-mobile-surface"
       style={{ backgroundColor: 'var(--t-bg)' }}
     >
       {/* Background diagonal gradient */}
@@ -190,7 +190,7 @@ export default function About() {
                 {services.map((service, index) => (
                   <div
                     key={service.title}
-                    className="service-card group p-6 rounded-xl border
+                    className="service-card group p-6 rounded-xl border glass-mobile-surface
                       hover:border-[#ff6b35]/50
                       hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(255,107,53,0.15)]
                       transition-all duration-350 preserve-3d"
@@ -235,7 +235,7 @@ export default function About() {
               </div>
 
               <div className="grid grid-cols-3 gap-6">
-                <div className="text-center p-6 rounded-xl border group hover:border-[#ff6b35]/30 transition-colors"
+                <div className="text-center p-6 rounded-xl border group hover:border-[#ff6b35]/30 transition-colors glass-mobile-surface"
                   style={{ backgroundColor: 'var(--t-bg-card)', borderColor: 'var(--t-border)' }}>
                   <div className="text-4xl lg:text-5xl font-bold text-gradient mb-2 group-hover:scale-105 transition-transform">
                     <AnimatedCounter target={data.about.stats.projects} suffix="+" />
@@ -243,7 +243,7 @@ export default function About() {
                   <div className="text-sm" style={{ color: 'var(--t-text-muted)' }}>Projects Completed</div>
                 </div>
 
-                <div className="text-center p-6 rounded-xl border group hover:border-[#ff6b35]/30 transition-colors"
+                <div className="text-center p-6 rounded-xl border group hover:border-[#ff6b35]/30 transition-colors glass-mobile-surface"
                   style={{ backgroundColor: 'var(--t-bg-card)', borderColor: 'var(--t-border)' }}>
                   <div className="text-4xl lg:text-5xl font-bold text-gradient mb-2 group-hover:scale-105 transition-transform">
                     <AnimatedCounter target={data.about.stats.satisfaction} suffix="%" />
@@ -251,7 +251,7 @@ export default function About() {
                   <div className="text-sm" style={{ color: 'var(--t-text-muted)' }}>Client Satisfaction</div>
                 </div>
 
-                <div className="text-center p-6 rounded-xl border group hover:border-[#ff6b35]/30 transition-colors"
+                <div className="text-center p-6 rounded-xl border group hover:border-[#ff6b35]/30 transition-colors glass-mobile-surface"
                   style={{ backgroundColor: 'var(--t-bg-card)', borderColor: 'var(--t-border)' }}>
                   <div className="text-4xl lg:text-5xl font-bold text-gradient mb-2 group-hover:scale-105 transition-transform">
                     <AnimatedCounter target={data.about.stats.experience} suffix="+" />

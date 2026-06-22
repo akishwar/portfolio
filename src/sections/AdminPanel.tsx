@@ -77,13 +77,23 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
     setSaveError(error instanceof Error ? error.message : 'Update failed. Please try again.');
   };
 
-  const uploadImage = async (file: File, folder: 'hero' | 'projects' | 'blog'): Promise<string> => {
+  const uploadImage = async (file: File, folder: 'hero' | 'projects' | 'blog' | 'resume'): Promise<string> => {
     if (!adminPassword) {
       throw new Error('Admin password missing. Please log in again.');
     }
 
-    const compressedBase64 = await new Promise<string>((resolve, reject) => {
+    const isDocument = file.type === 'application/pdf' || file.name.endsWith('.pdf') || file.name.endsWith('.docx') || file.name.endsWith('.doc');
+
+    const fileBase64 = await new Promise<string>((resolve, reject) => {
       const reader = new FileReader();
+      
+      if (isDocument) {
+        reader.onload = (event) => resolve(event.target?.result as string);
+        reader.onerror = () => reject(new Error('Failed to read document'));
+        reader.readAsDataURL(file);
+        return;
+      }
+
       reader.onload = (event) => {
         const img = new Image();
         img.onload = () => {
@@ -124,7 +134,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
       body: JSON.stringify({
         adminPassword,
         fileName: file.name,
-        fileBase64: compressedBase64,
+        fileBase64,
         folder
       })
     });
@@ -315,8 +325,18 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
   const handleResumeUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // NOTE: Resume upload via GitHub is not fully implemented in this flow.
-      // Keeping this commented until a non-image PDF endpoint is added.
+      setSavingSection('image-upload');
+      setSaveMessage('');
+      setSaveError('');
+      try {
+        const url = await uploadImage(file, 'resume');
+        setHeroForm((prev) => ({ ...prev, resume: url }));
+        setSavingSection(null);
+        setSaveMessage('Resume uploaded — click Update Hero to apply it');
+      } catch (error) {
+        setSavingSection(null);
+        setSaveError(error instanceof Error ? error.message : 'Upload failed. Please try again.');
+      }
     }
   };
 

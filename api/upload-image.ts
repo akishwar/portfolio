@@ -4,7 +4,7 @@ interface UploadRequest {
   adminPassword?: string;
   fileName?: string;
   fileBase64?: string;
-  folder?: "hero" | "projects" | "blog";
+  folder?: "hero" | "projects" | "blog" | "resume";
 }
 
 const rateLimitMap = new Map<string, { count: number, resetTime: number }>();
@@ -49,11 +49,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ error: 'Bad Request: Missing required fields' });
     }
 
-    // 1MB limit for the actual decoded file size
+    // 5MB limit for the actual decoded file size (PDFs can be larger than images)
     // Base64 size = (stringLength / 4) * 3
     const approximateSize = (fileBase64.length / 4) * 3;
-    if (approximateSize > 1048576) {
-      return res.status(400).json({ error: 'Image must be under 1MB after compression' });
+    if (approximateSize > 5242880) {
+      return res.status(400).json({ error: 'File must be under 5MB' });
     }
 
     const token = process.env.GITHUB_TOKEN;
@@ -73,7 +73,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const finalFilename = `${timestamp}-${sanitizedName}.${ext}`;
     
     // Validate folder
-    if (!['hero', 'projects', 'blog'].includes(folder)) {
+    if (!['hero', 'projects', 'blog', 'resume'].includes(folder)) {
       return res.status(400).json({ error: 'Invalid folder specified' });
     }
 

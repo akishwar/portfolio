@@ -1,0 +1,53 @@
+{
+  "hero": {
+    "greeting": "Hello,",
+    "name": "I'm Akishwar L",
+    "title": "B.Tech AI&DS Student",
+    "description": "Passionate developer and part time full stack developer. I build robust and scalable web applications.",
+    "profileImage": "/hero-profile.jpg",
+    "resume": ""
+  },
+  "about": {
+    "description": "I am a B.Tech AI&DS student, passionate developer, and part-time full-stack developer focused on building scalable backend services and responsive frontend interfaces. My journey began with a deep curiosity for computer science, evolving into a career dedicated to developing efficient and user-centered applications.",
+    "stats": {
+      "projects": 15,
+      "satisfaction": 100,
+      "experience": 3
+    }
+  },
+  "projects": [
+    {
+      "id": 1,
+      "category": "Full Stack Application",
+      "title": "Nyaya Sahayogi",
+      "description": "An advanced legal analysis tool integrating OCR and LLM for robust case evaluation and evidence parsing.",
+      "image": "/project-1.jpg",
+      "link": "https://github.com/akishwar/nyaya-sahayogi"
+    },
+    {
+      "id": 2,
+      "category": "Web Application",
+      "title": "Breast Cancer Risk App",
+      "description": "A machine learning-powered web application assisting doctors with patient risk assessment based on geographical and demographic data.",
+      "image": "/project-2.jpg",
+      "link": "https://github.com/akishwar/breast-cancer-risk"
+    }
+  ],
+  "skills": [
+    { "id": 1, "name": "React", "percentage": 95, "icon": "⚛️" },
+    { "id": 2, "name": "TypeScript", "percentage": 90, "icon": "📘" },
+    { "id": 3, "name": "Node.js", "percentage": 88, "icon": "🟢" },
+    { "id": 4, "name": "Python", "percentage": 85, "icon": "🐍" },
+    { "id": 5, "name": "AWS", "percentage": 82, "icon": "☁️" },
+    { "id": 6, "name": "GraphQL", "percentage": 80, "icon": "◈" },
+    { "id": 7, "name": "Docker", "percentage": 78, "icon": "🐳" },
+    { "id": 8, "name": "PostgreSQL", "percentage": 85, "icon": "🐘" }
+  ],
+  "testimonials": [],
+  "blogPosts": [],
+  "contact": {
+    "email": "lakishwar@gmail.com",
+    "phone": "",
+    "location": "India"
+  }
+}

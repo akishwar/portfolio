@@ -1,10 +1,13 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ArrowDown, Download, ArrowRight } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
 
 export default function Hero() {
   const { data } = useAdmin();
+  const [isZoomed, setIsZoomed] = useState(false);
+  const [isMobileZoomed, setIsMobileZoomed] = useState(false);
+  const profileImageNobg = data.hero.profileImage ? data.hero.profileImage.replace(/(\.[a-zA-Z0-9]+)$/, '_nobg$1') : '';
   const sectionRef = useRef<HTMLElement>(null);
   const mobileRef = useRef<HTMLElement>(null);
   const greetingRef = useRef<HTMLSpanElement>(null);
@@ -130,13 +133,19 @@ export default function Hero() {
       {/* MOBILE HERO (Hidden on lg+ screens) */}
       <section
         ref={mobileRef}
-        className="lg:hidden relative min-h-[100dvh] w-full overflow-hidden"
+        className="lg:hidden relative min-h-[100dvh] w-full overflow-hidden cursor-pointer"
+        onTouchStart={() => setIsMobileZoomed(true)}
+        onTouchEnd={() => setIsMobileZoomed(false)}
+        onMouseDown={() => setIsMobileZoomed(true)}
+        onMouseUp={() => setIsMobileZoomed(false)}
       >
         {/* Background Photo */}
         <img
           src={data.hero.profileImage}
           alt={data.hero.name}
-          className="absolute inset-0 w-full h-full object-cover"
+          className={`absolute inset-0 w-full h-full object-cover transition-transform duration-1000 ease-out ${
+            isMobileZoomed ? 'scale-110' : 'scale-100'
+          }`}
           style={{ objectPosition: 'center 20%' }}
         />
 
@@ -148,7 +157,7 @@ export default function Hero() {
 
         {/* Main Content */}
         <div className="absolute inset-0 z-10 flex flex-col justify-center px-6 pt-20">
-          <div className="max-w-[260px]">
+          <div className="max-w-[280px]">
             <div className="text-white/90 text-xl font-medium mb-2">
               {data.hero.name}
             </div>
@@ -164,13 +173,24 @@ export default function Hero() {
               {data.hero.description}
             </p>
 
-            <button 
-              onClick={scrollToProjects}
-              className="inline-flex items-center gap-3 rounded-full border-2 border-[#ff6b35] text-[#ff6b35] bg-transparent px-7 py-3 font-medium hover:bg-[#ff6b35]/10 transition-colors"
-            >
-              View My Work
-              <ArrowRight size={18} />
-            </button>
+            <div className="flex flex-col gap-3">
+              <button 
+                onClick={scrollToProjects}
+                className="inline-flex items-center justify-center gap-3 rounded-full border-2 border-[#ff6b35] text-[#ff6b35] bg-transparent px-7 py-3 font-medium hover:bg-[#ff6b35]/10 transition-colors w-full"
+              >
+                View My Work
+                <ArrowRight size={18} />
+              </button>
+              
+              <a
+                href={data.hero.resume || "/resume.pdf"}
+                download="Akishwar_Resume"
+                className="inline-flex items-center justify-center gap-3 rounded-full border border-white/20 text-white bg-white/10 backdrop-blur-sm px-7 py-3 font-medium hover:bg-white/25 transition-all w-full"
+              >
+                Download Resume
+                <Download size={18} />
+              </a>
+            </div>
           </div>
         </div>
 
@@ -266,15 +286,21 @@ export default function Hero() {
             <div className="relative flex justify-center lg:justify-end perspective-1000">
               <div
                 ref={imageRef}
-                className="relative preserve-3d group"
+                className="relative preserve-3d group cursor-pointer w-[320px] h-[320px] sm:w-[380px] sm:h-[380px] lg:w-[440px] lg:h-[440px] xl:w-[480px] xl:h-[480px]"
                 style={{ transformStyle: 'preserve-3d' }}
+                onTouchStart={() => setIsZoomed(true)}
+                onTouchEnd={() => setIsZoomed(false)}
+                onMouseEnter={() => setIsZoomed(true)}
+                onMouseLeave={() => setIsZoomed(false)}
+                onMouseDown={() => setIsZoomed(true)}
+                onMouseUp={() => setIsZoomed(false)}
               >
                 {/* Animated gradient frame */}
                 <svg
                   ref={frameRef}
                   className="absolute -inset-4 w-[calc(100%+32px)] h-[calc(100%+32px)] animate-spin"
                   style={{ animationDuration: '20s' }}
-                  viewBox="0 0 300 380"
+                  viewBox="0 0 300 300"
                 >
                   <defs>
                     <linearGradient id="frameGradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -285,29 +311,32 @@ export default function Hero() {
                   </defs>
                   <circle
                     cx="150"
-                    cy="190"
+                    cy="150"
                     r="140"
                     fill="none"
                     stroke="url(#frameGradient)"
                     strokeWidth="2"
-                    opacity="0.6"
+                    opacity="0.5"
                   />
                 </svg>
 
                 {/* Glow effect */}
-                <div className="absolute inset-0 bg-[#ff6b35]/20 rounded-full blur-[60px] animate-pulse-glow" />
+                <div className={`absolute inset-0 rounded-full blur-[60px] transition-all duration-700 ${
+                  isZoomed ? 'bg-[#ff6b35]/35' : 'bg-[#ff6b35]/15'
+                }`} />
 
-                {/* Profile image */}
-                <div className="relative w-[280px] h-[350px] sm:w-[320px] sm:h-[400px] lg:w-[360px] lg:h-[450px] rounded-full overflow-hidden
-                  border-2 group-hover:border-[#ff6b35]/50 transition-colors duration-500"
-                  style={{ borderColor: 'var(--t-border)' }}>
+                {/* Profile image (cutout) clipped into a circle */}
+                <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-[#ff6b35]/20 group-hover:border-[#ff6b35]/45 transition-colors duration-500">
                   <img
-                    src={data.hero.profileImage}
+                    src={profileImageNobg}
                     alt={data.hero.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    className={`w-full h-full object-cover transition-transform duration-700 ease-out ${
+                      isZoomed ? 'scale-110' : 'scale-100'
+                    }`}
+                    style={{
+                      objectPosition: 'center 15%'
+                    }}
                   />
-                  {/* Overlay gradient */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
                 </div>
 
                 {/* Floating shapes */}

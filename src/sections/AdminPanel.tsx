@@ -3,6 +3,7 @@ import {
   X, User, Code, FileText, Settings, RotateCcw, Plus, Trash2,
   Pencil, Check, ExternalLink, Zap, Info, LogOut
 } from 'lucide-react';
+import { removeBackground } from '@imgly/background-removal';
 import { useAdmin } from '../context/AdminContext';
 import { useAuth } from '../context/AuthContext';
 import type { Project, Skill } from '../context/AdminContext';
@@ -44,6 +45,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
   const [saveMessage, setSaveMessage] = useState('');
   const [saveError, setSaveError] = useState('');
   const [savingSection, setSavingSection] = useState<string | null>(null);
+  const [uploadStatus, setUploadStatus] = useState('');
 
   const [newProject, setNewProject] = useState({ category: '', title: '', description: '', image: '', link: '' });
   const [editingProjectId, setEditingProjectId] = useState<number | null>(null);
@@ -77,7 +79,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
     setSaveError(error instanceof Error ? error.message : 'Update failed. Please try again.');
   };
 
-  const uploadImage = async (file: File, folder: 'hero' | 'projects' | 'blog' | 'resume'): Promise<string> => {
+  const uploadImage = async (file: File, folder: 'hero' | 'projects' | 'blog' | 'resume', customName?: string): Promise<string> => {
     if (!adminPassword) {
       throw new Error('Admin password missing. Please log in again.');
     }
@@ -117,7 +119,10 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
           if (!ctx) return reject(new Error('Canvas not supported'));
           ctx.drawImage(img, 0, 0, width, height);
           
-          resolve(canvas.toDataURL('image/jpeg', 0.8));
+          // Preserving PNG format for transparency when uploading background-removed images
+          const isPng = file.type === 'image/png' || file.name.endsWith('.png') || (customName && customName.endsWith('.png'));
+          const outputType = isPng ? 'image/png' : 'image/jpeg';
+          resolve(canvas.toDataURL(outputType, isPng ? undefined : 0.8));
         };
         img.onerror = () => reject(new Error('Failed to load image for compression'));
         img.src = event.target?.result as string;
@@ -135,7 +140,8 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
         adminPassword,
         fileName: file.name,
         fileBase64,
-        folder
+        folder,
+        customName
       })
     });
 
@@ -145,6 +151,14 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
     }
 
     const data = await response.json();
+    
+    // Cache the base64 data locally for instant preview before redeployment completes
+    try {
+      sessionStorage.setItem(`preview-${data.path}`, fileBase64);
+    } catch (e) {
+      console.warn('Failed to cache image preview in sessionStorage:', e);
+    }
+
     return data.path;
   };
 
@@ -268,15 +282,44 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
     const file = e.target.files?.[0];
     if (file) {
       setSavingSection('image-upload');
+      setUploadStatus('Uploading original photo...');
       setSaveMessage('');
       setSaveError('');
       try {
-        const url = await uploadImage(file, 'hero');
+        const timestamp = Date.now();
+        const baseName = file.name.includes('.') 
+          ? file.name.substring(0, file.name.lastIndexOf('.')).replace(/[^a-zA-Z0-9-_]/g, '') 
+          : file.name.replace(/[^a-zA-Z0-9-_]/g, '');
+        const ext = file.name.includes('.') ? file.name.split('.').pop() : 'jpg';
+        
+        const originalFilename = `${timestamp}-${baseName}.${ext}`;
+        const noBgFilename = `${timestamp}-${baseName}_nobg.png`;
+
+        // 1. Upload original image
+        const url = await uploadImage(file, 'hero', originalFilename);
         setHeroForm((prev) => ({ ...prev, profileImage: url }));
-        setSavingSection(null);
-        setSaveMessage('Image uploaded — click Update Hero to apply it');
+
+        // 2. Remove background using client-side AI
+        setUploadStatus('Removing photo background (AI)...');
+        try {
+          const noBgBlob = await removeBackground(file);
+          const noBgFile = new File([noBgBlob], noBgFilename, { type: 'image/png' });
+          
+          setUploadStatus('Uploading background-removed cutout...');
+          await uploadImage(noBgFile, 'hero', noBgFilename);
+          
+          setSavingSection(null);
+          setUploadStatus('');
+          setSaveMessage('Photo uploaded and background removed successfully! Click Update Hero to save.');
+        } catch (bgError) {
+          console.error('AI background removal failed, uploading original only:', bgError);
+          setSavingSection(null);
+          setUploadStatus('');
+          setSaveMessage('Photo uploaded, but background removal failed. Click Update Hero to save.');
+        }
       } catch (error) {
         setSavingSection(null);
+        setUploadStatus('');
         setSaveError(error instanceof Error ? error.message : 'Upload failed. Please try again.');
       }
     }
@@ -436,7 +479,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
             ))}
           </div>
           <div className="flex-1 overflow-y-auto p-6">
-            {savingSection === 'image-upload' && <div className="mb-4 rounded-md border border-blue-500/30 bg-blue-500/10 px-3 py-2 text-sm text-blue-300 animate-pulse">Uploading image...</div>}
+            {savingSection === 'image-upload' && <div className="mb-4 rounded-md border border-blue-500/30 bg-blue-500/10 px-3 py-2 text-sm text-blue-300 animate-pulse">{uploadStatus || 'Uploading image...'}</div>}
             {saveMessage && <div className="mb-4 rounded-md border border-green-500/30 bg-green-500/10 px-3 py-2 text-sm text-green-300">{saveMessage}</div>}
             {saveError && <div className="mb-4 rounded-md border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-300 break-words">{saveError}</div>}
 

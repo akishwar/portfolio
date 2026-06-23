@@ -51,7 +51,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const token = process.env.GITHUB_TOKEN;
     const owner = process.env.GITHUB_OWNER;
     const repo = process.env.GITHUB_REPO;
-    const branch = process.env.GITHUB_BRANCH || 'main';
+    const branch = process.env.GITHUB_BRANCH || 'master';
     const path = 'public/portfolio-data.json';
 
     if (!token || !owner || !repo) {

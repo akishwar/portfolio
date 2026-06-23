@@ -3,6 +3,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowUpRight, ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
+import { getImageUrl } from '../utils/image';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -186,7 +187,7 @@ export default function Projects() {
               {/* Image */}
               <div className="relative h-52 lg:h-60 overflow-hidden">
                 <img
-                  src={project.image}
+                  src={getImageUrl(project.image)}
                   alt={project.title}
                   loading="lazy"
                   decoding="async"

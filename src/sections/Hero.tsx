@@ -2,12 +2,17 @@ import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ArrowDown, Download, ArrowRight } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
+import { getImageUrl } from '../utils/image';
 
 export default function Hero() {
   const { data } = useAdmin();
   const [isZoomed, setIsZoomed] = useState(false);
   const [isMobileZoomed, setIsMobileZoomed] = useState(false);
-  const profileImageNobg = data.hero.profileImage ? data.hero.profileImage.replace(/(\.[a-zA-Z0-9]+)$/, '_nobg$1') : '';
+  const profileImageNobg = data.hero.profileImage
+    ? (data.hero.profileImage === '/hero-profile.jpg'
+      ? '/hero-profile_nobg.jpg'
+      : getImageUrl(data.hero.profileImage.replace(/(\.[a-zA-Z0-9]+)$/, '_nobg.png')))
+    : '';
   const sectionRef = useRef<HTMLElement>(null);
   const mobileRef = useRef<HTMLElement>(null);
   const greetingRef = useRef<HTMLSpanElement>(null);
@@ -141,7 +146,7 @@ export default function Hero() {
       >
         {/* Background Photo */}
         <img
-          src={data.hero.profileImage}
+          src={getImageUrl(data.hero.profileImage)}
           alt={data.hero.name}
           className={`absolute inset-0 w-full h-full object-cover transition-transform duration-1000 ease-out ${
             isMobileZoomed ? 'scale-110' : 'scale-100'
@@ -335,6 +340,13 @@ export default function Hero() {
                     }`}
                     style={{
                       objectPosition: 'center 15%'
+                    }}
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      const fallback = getImageUrl(data.hero.profileImage);
+                      if (target.src !== fallback) {
+                        target.src = fallback;
+                      }
                     }}
                   />
                 </div>

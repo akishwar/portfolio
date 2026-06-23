@@ -5,6 +5,7 @@ interface UploadRequest {
   fileName?: string;
   fileBase64?: string;
   folder?: "hero" | "projects" | "blog" | "resume";
+  customName?: string;
 }
 
 const rateLimitMap = new Map<string, { count: number, resetTime: number }>();
@@ -39,7 +40,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    const { adminPassword, fileName, fileBase64, folder } = req.body as UploadRequest;
+    const { adminPassword, fileName, fileBase64, folder, customName } = req.body as UploadRequest;
 
     if (!adminPassword || adminPassword !== process.env.ADMIN_PASSWORD) {
       return res.status(401).json({ error: 'Unauthorized: Invalid admin password' });
@@ -59,18 +60,27 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const token = process.env.GITHUB_TOKEN;
     const owner = process.env.GITHUB_OWNER;
     const repo = process.env.GITHUB_REPO;
-    const branch = process.env.GITHUB_BRANCH || 'main';
+    const branch = process.env.GITHUB_BRANCH || 'master';
 
     if (!token || !owner || !repo) {
       return res.status(500).json({ error: 'Server misconfiguration: Missing GitHub credentials' });
     }
 
-    // Sanitize filename
-    const ext = fileName.includes('.') ? fileName.split('.').pop() : 'bin';
-    const nameWithoutExt = fileName.includes('.') ? fileName.substring(0, fileName.lastIndexOf('.')) : fileName;
-    const sanitizedName = nameWithoutExt.replace(/[^a-zA-Z0-9-_]/g, '');
-    const timestamp = Date.now();
-    const finalFilename = `${timestamp}-${sanitizedName}.${ext}`;
+    // Sanitize and determine filename
+    let finalFilename = '';
+    if (customName) {
+      const sanitized = customName.replace(/[^a-zA-Z0-9-_.]/g, '');
+      if (sanitized !== customName || customName.includes('..') || customName.includes('/') || customName.includes('\\')) {
+        return res.status(400).json({ error: 'Bad Request: Invalid custom filename' });
+      }
+      finalFilename = sanitized;
+    } else {
+      const ext = fileName.includes('.') ? fileName.split('.').pop() : 'bin';
+      const nameWithoutExt = fileName.includes('.') ? fileName.substring(0, fileName.lastIndexOf('.')) : fileName;
+      const sanitizedName = nameWithoutExt.replace(/[^a-zA-Z0-9-_]/g, '');
+      const timestamp = Date.now();
+      finalFilename = `${timestamp}-${sanitizedName}.${ext}`;
+    }
     
     // Validate folder
     if (!['hero', 'projects', 'blog', 'resume'].includes(folder)) {

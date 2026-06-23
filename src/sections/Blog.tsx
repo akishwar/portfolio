@@ -3,6 +3,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowRight, Calendar } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
+import { getImageUrl } from '../utils/image';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -91,7 +92,7 @@ export default function Blog() {
               {/* Image */}
               <div className="relative h-48 overflow-hidden">
                 <img
-                  src={post.image}
+                  src={getImageUrl(post.image)}
                   alt={post.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                 />
